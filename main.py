@@ -5,7 +5,7 @@ pygame.display.set_caption("Shooter game")
 
 def draw_window():
     screen.fill("white")
-    pygame.display.update()
+    pygame.display.update()#
 
 def main():
     clock = pygame.time.Clock()
