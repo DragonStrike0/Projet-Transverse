@@ -1,6 +1,8 @@
 import pygame
 import time
 from Boutons import *
+from jeu import *
+from joueur import *
 
 pygame.init()
 
@@ -42,6 +44,10 @@ while run :
         if event.type == pygame.QUIT:
             run = False
             pygame.quit()
+        """elif event.type == pygame.MOUSEBUTTONDOWN:
+            if solo_button.rect.collidepoint(event.pos):
+                joueur = Player()"""
+
 
     pygame.display.update()
 
