@@ -31,11 +31,11 @@ while run :
     text("ULTIMATE ARCHER", police_large, (255, 255, 255), 310, 120)
     text("Menu Principal", police_petite, (255, 255, 255), 470, 220)
 
-    solo_button = create_buttons(550, 300, 150, 50, "Solo", (0, 128, 255), (0, 100, 200))
+    solo_button = create_buttons(550, 300, 150, 50, "Solo", (25, 4, 130), (0, 100, 200))
     solo_button.draw(ecran)
-    one_vs_one_button = create_buttons(550, 400, 150, 50, "1v1",(0, 128, 0), (0, 100, 0))
+    one_vs_one_button = create_buttons(550, 400, 150, 50, "1v1",(179, 19, 18), (0, 100, 0))
     one_vs_one_button.draw(ecran)
-    settings_button = create_buttons(500, 500, 260, 50, "Paramètres", (255, 165, 0), (255, 140, 0))
+    settings_button = create_buttons(500, 500, 260, 50, "Paramètres", (191, 207,231), (255, 140, 0))
     settings_button.draw(ecran)
 
     for event in pygame.event.get():
