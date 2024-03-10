@@ -11,7 +11,7 @@ class Weapon(pygame.sprite.Sprite):
         self.damage = damage
         self.precision = 0
 
-arc_long = Weapon("Arc Lourd", )
+"""arc_long = Weapon("Arc Lourd", )"""
 
 
 class Arrow(pygame.sprite.Sprite):

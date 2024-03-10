@@ -16,8 +16,8 @@ class Player(pygame.sprite.Sprite):
         self.force = force
 
 
-humain = Player(4,4,15, "", 0,0,85, 30)
+"""humain = Player(4,4,15, "", 0,0,85, 30)
 elf = Player(3, 3, 25, "", 0, 0, 60, 20)
-orque = Player(7, 7, 5, "", 0, 0, 120, 50)
+orque = Player(7, 7, 5, "", 0, 0, 120, 50)"""
 
 
