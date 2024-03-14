@@ -1,53 +1,111 @@
-import pygame
-import time
-from Boutons import *
-from jeu import *
-from joueur import *
+import pygame, sys
+from Boutons import Button
 
 pygame.init()
 
-#créer la fenêtre du jeu :
-ecran = pygame.display.set_mode((1280, 720))
-pygame.display.set_caption("Ultimate Archer")
+SCREEN = pygame.display.set_mode((1280, 720))
+pygame.display.set_caption("Menu")
 
-#charger l'image de fond
-image_fond = pygame.image.load("Images/Intro-fond.jpg").convert()
-image_fond = pygame.transform.scale(image_fond, (1280, 720))
-
-# Définir les polices
-police_large = pygame.font.SysFont("arialblack", 60)
-police_petite = pygame.font.SysFont("arialblack", 40)
-
-def text(texte, police, couleur_texte, x, y):
-    image_texte = police.render(texte, True, couleur_texte)
-    ecran.blit(image_texte, (x, y))
-
-run = True
-
-#Boucle tant que la condition est vrai
-while run :
-
-    horloge = pygame.time.Clock()
-
-    ecran.blit(image_fond, (0, 0))  # Fond d'écran
-    text("ULTIMATE ARCHER", police_large, (255, 255, 255), 310, 120)
-    text("Menu Principal", police_petite, (255, 255, 255), 470, 220)
-
-    solo_button = create_buttons(550, 300, 150, 50, "Solo", (25, 4, 130), (0, 100, 200))
-    solo_button.draw(ecran)
-    one_vs_one_button = create_buttons(550, 400, 150, 50, "1v1",(179, 19, 18), (0, 100, 0))
-    one_vs_one_button.draw(ecran)
-    settings_button = create_buttons(500, 500, 260, 50, "Paramètres", (191, 207,231), (255, 140, 0))
-    settings_button.draw(ecran)
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-            pygame.quit()
-        """elif event.type == pygame.MOUSEBUTTONDOWN:
-            if solo_button.rect.collidepoint(event.pos):
-                joueur = Player()"""
+BG = pygame.image.load("assets/Background.png")
 
 
-    pygame.display.update()
+def get_font(kind,size):
+    if kind=='font':
+        return pygame.font.Font("assets/font.ttf", size)
+    elif kind=='Quest':
+        return pygame.font.Font("assets/Quest.ttf", size)
+    elif kind=='Text':
+        return pygame.font.Font("assets/Text.ttf", size)
+    elif kind=='Title':
+        return pygame.font.Font("assets/Title.ttf", size)
 
+
+
+def play():
+    while True:
+        PLAY_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.fill("black")
+
+        PLAY_TEXT = get_font('Title',45).render("This is the PLAY screen.", True, "White")
+        PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 260))
+        SCREEN.blit(PLAY_TEXT, PLAY_RECT)
+
+        PLAY_BACK = Button(image=None, pos=(640, 460),text_input="BACK", font=get_font('Text',75), base_color="White", hovering_color="Green")
+
+        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
+        PLAY_BACK.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                    main_menu()
+
+        pygame.display.update()
+
+
+def options():
+    while True:
+        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.fill("white")
+
+        OPTIONS_TEXT = get_font('Title',45).render("This is the OPTIONS screen.", True, "Black")
+        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
+        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+
+        OPTIONS_BACK = Button(image=None, pos=(640, 460),text_input="BACK", font=get_font('Text',75), base_color="Black", hovering_color="Green")
+
+        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_BACK.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
+                    main_menu()
+
+        pygame.display.update()
+
+
+def main_menu():
+    while True:
+        SCREEN.blit(BG, (0, 0))
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        MENU_TEXT = get_font('Title',200).render("MAIN MENU", True, "#EB0000")
+        MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
+
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/1V1 Rect.png"), pos=(640, 250),text_input="PLAY", font=get_font('Text',75), base_color="#A100FF", hovering_color="White")
+        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400),text_input="OPTIONS",font=get_font('Text',75), base_color="#A100FF", hovering_color="White")
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550),text_input="QUIT", font=get_font('Text',75), base_color="#A100FF", hovering_color="White")
+
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+
+        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    play()
+                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    options()
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.quit()
+                    sys.exit()
+
+        pygame.display.update()
+
+
+main_menu()
