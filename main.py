@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame,sys
 from Boutons import Button
 
 pygame.init()
@@ -9,14 +9,14 @@ pygame.display.set_caption("Menu")
 BG = pygame.image.load("assets/Background.png")
 
 
-def get_font(kind,size):
-    if kind=='font':
+def get_font(typo,size):
+    if typo=='font':
         return pygame.font.Font("assets/font.ttf", size)
-    elif kind=='Quest':
+    elif typo=='Quest':
         return pygame.font.Font("assets/Quest.ttf", size)
-    elif kind=='Text':
+    elif typo=='Text':
         return pygame.font.Font("assets/Text.ttf", size)
-    elif kind=='Title':
+    elif typo=='Title':
         return pygame.font.Font("assets/Title.ttf", size)
 
 
