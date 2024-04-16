@@ -7,7 +7,7 @@ class Weapon(pygame.sprite.Sprite):
         self.f_max = 50
         self.nom = nom
         self.ammo = arrow_type
-        self.image = self.image.load("Image/"+image)
+        self.image = self.image.load("Image"+image)
         self.damage = damage
         self.precision = 0
 
