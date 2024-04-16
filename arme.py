@@ -1,4 +1,4 @@
-import pygame
+import pygame,sys,ctypes
 
 class Weapon(pygame.sprite.Sprite):
 

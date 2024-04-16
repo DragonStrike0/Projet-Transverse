@@ -1,23 +1,26 @@
-import pygame
-
+import pygame,sys,ctypes
 
 class Player(pygame.sprite.Sprite):
-
-    def __init__(self, health, max_health, velocity, image, x, y, weight, force):
+    def __init__(self, health = 4, max_health = 4, velocity = 15, image = "humain.png", weight = 85, force = 30):
         super().__init__()
         self.health = health
         self.max_health = max_health
         self.velocity = velocity
-        self.image = pygame.image.load("Images/"+image)
-        self.x = x
-        self.y = y
+        self.image = pygame.image.load("assets/player/"+image)
         self.rect = self.image.get_rect()
+        self.rect.x = 100
+        self.rect.y = 470
         self.weight = weight
         self.force = force
 
 
-"""humain = Player(4,4,15, "", 0,0,85, 30)
-elf = Player(3, 3, 25, "", 0, 0, 60, 20)
-orque = Player(7, 7, 5, "", 0, 0, 120, 50)"""
+    def move_right(self):
+        self.rect.x += int(self.velocity/10)
+    def move_left(self):
+        self.rect.x -= int(self.velocity/10)
 
 
+#les classes/ joueurs : temporaire
+humain = Player(4,4,15, "humain.png",85, 30)
+elf = Player(3, 3, 25, "elf.png", 60, 20)
+orc = Player(7, 7, 5, "orc.png", 120, 50)
