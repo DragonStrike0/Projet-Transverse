@@ -144,17 +144,20 @@ def main_menu():
 def start():
     # paramètrage de l'affichage de la map, hors de la boucle pour éviter un bug graphique,
     # remettre dans la boucle si nécessaire
-    level = pygame.image.load('assets/level/prairie.jpg')
-    level = pygame.transform.scale(level, (1280, 720))
     SCREEN = pygame.display.set_mode((1280, 720))
 
-    game.player.image = pygame.transform.scale(game.player.image, (1280 / 15, 1280 / 15))
     while True:
         # affichage de la map
-        SCREEN.blit(level, (0, 0))
+        SCREEN.blit(game.map.image, (0, 0))
 
         # affichage du joueur
         SCREEN.blit(game.player.image, game.player.rect)
+
+        # affichage des armes
+        SCREEN.blit(game.player.arme.image, game.player.arme.rect)
+
+        # affichage des projectiles
+        game.player.all_projectiles.draw(SCREEN)
 
         # verifier les actions du joueur
         if game.pressed.get(pygame.K_d) or game.pressed.get(pygame.K_RIGHT):
@@ -166,7 +169,7 @@ def start():
 
         print(game.player.rect.x)
 
-        PLAY_MOUSE_POS = pygame.mouse.get_pos()
+        # PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
         # si le joueur ferme le jeu
         for event in pygame.event.get():
@@ -176,6 +179,12 @@ def start():
             # voir sur quelles touches le joueur appuis
             elif event.type == pygame.KEYDOWN:
                 game.pressed[event.key] = True
+
+                # tirer
+                if event.key == pygame.K_SPACE:
+                    mouse_position = pygame.mouse.get_pos()
+                    game.player.tirer()
+
             elif event.type == pygame.KEYUP:
                 game.pressed[event.key] = False
 

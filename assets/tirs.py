@@ -5,13 +5,44 @@ import math
 from projectile import Projectile
 from jeu import Game
 from arme import Arme
-from maps import Map
+# from maps import Map
 
+
+def calculer_pente(x1, y1, x2, y2):
+    if (x2 - x1 == 0):
+        return False, 0
+    return True, (y2 - y1) / (x2 - x1)
+
+
+def calculer_angle(pente):
+    return math.degrees(math.atan(pente))
+
+
+def angle_entre_droite_et_abscisse(x1, y1, x2, y2):
+    pente = calculer_pente(x1, y1, x2, y2)
+    if pente[0]:
+        angle = calculer_angle(pente[1])
+    else:
+        if y2 < y1:
+            angle = -90
+        else:
+            angle = 90
+
+    return angle
+
+
+# Exemple d'utilisation
+x1, y1 = 0, 0
+x2, y2 = -10, 0
+
+angle = angle_entre_droite_et_abscisse(x1, y1, x2, y2)
+print("L'angle entre la droite et l'axe des abscisses est :", angle, "degrés.")
 
 class Tir:
 
-    def __init__(self, angle=45, gravite=Map().gravite, force=3 * Game().player.force - Arme().force_max,
-                 poids=Projectile().poids, x_initial=Game().player.rect.x, y_initial=Game().player.rect.y):
+    def __init__(self, angle=angle_entre_droite_et_abscisse(x1, y1, x2, y2), gravite=Game.map().gravite,
+                 force=3 * Game().player.force - Arme().force_max, poids=Projectile().poids,
+                 x_initial=Game().player.rect.x, y_initial=Game().player.rect.y):
         self.vitesse_initiale = 100 / force
         self.angle_rad = angle * (math.pi / 180)
         self.vitesse_x = self.vitesse_initiale * math.cos(self.angle_rad)

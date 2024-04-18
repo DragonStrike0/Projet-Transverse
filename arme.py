@@ -6,7 +6,7 @@ import math
 
 class Arme(pygame.sprite.Sprite):
 
-    def __init__(self, nom="arc long", projectile_type="fleches", image="arc_long.png", damage=2, poids=2,
+    def __init__(self, nom="arc long", projectile_type="fleches", image="arc long.png", damage=2, poids=2,
                  force_max=50, precision=0):
         super().__init__()
         self.weight = poids
@@ -14,9 +14,9 @@ class Arme(pygame.sprite.Sprite):
         self.nom = nom
         self.ammo = projectile_type
         self.image = pygame.image.load("assets/player/" + image)
+        self.image = pygame.transform.scale(self.image, (1280 / 22, 1280 / 22))
+        self.image = pygame.transform.rotate(self.image, 180 + 45)  # 45 pour les mechants
         self.rect = self.image.get_rect()
-        # self.x = x
-        # self.y = y
         self.damage = damage
         self.precision = precision
 
