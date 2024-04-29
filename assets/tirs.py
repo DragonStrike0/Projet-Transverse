@@ -41,7 +41,7 @@ print("L'angle entre la droite et l'axe des abscisses est :", angle, "degrés.")
 class Tir:
 
     def __init__(self, angle=angle_entre_droite_et_abscisse(x1, y1, x2, y2), gravite=Game.map().gravite,
-                 force=3 * Game().player.force - Arme().force_max, poids=Projectile().poids,
+                 force=3 * Game().player.force - Arme().force_max, poids=Projectile().masses,
                  x_initial=Game().player.rect.x, y_initial=Game().player.rect.y):
         self.vitesse_initiale = 100 / force
         self.angle_rad = angle * (math.pi / 180)

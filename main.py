@@ -9,8 +9,8 @@ pygame.init()
 
 # Création de la fenêtre du jeu
 
-mon_icone = '_'
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(mon_icone)
+"""mon_icone = '_'
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(mon_icone)"""
 SCREEN = pygame.display.set_mode((1280, 720))
 icone = pygame.image.load("assets/icone.png")
 pygame.display.set_caption("Ultimate Archer")
