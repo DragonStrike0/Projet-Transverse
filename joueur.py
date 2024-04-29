@@ -2,8 +2,8 @@ import pygame
 import sys
 import ctypes
 import math
-from projectile import Projectile
-from arme import Arme
+from tir import Projectile
+from tir import Arme
 
 
 class Player(pygame.sprite.Sprite):
