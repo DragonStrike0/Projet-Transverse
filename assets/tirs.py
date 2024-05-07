@@ -3,7 +3,7 @@ import sys
 import ctypes
 import math
 from projectile import Projectile
-from jeu import Game
+from Jeu import Game
 from arme import Arme
 # from maps import Map
 
