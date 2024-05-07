@@ -66,7 +66,7 @@ class Player(pygame.sprite.Sprite):
         self.x_vel = 0
         self.y_vel = 0
         self.mask = None
-        self.direction = "left"
+        self.direction = "right"
         self.animation_count = 0
         self.fall_count = 0
         self.jump_count = 0
