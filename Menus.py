@@ -3,7 +3,7 @@ import sys
 import ctypes
 import math
 from Boutons import Button
-from Jeu import game, window
+from jeu import game, window
 
 
 BG = pygame.image.load("assets/Background.png")
