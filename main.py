@@ -13,7 +13,8 @@ pygame.init()
 
 """mon_icone = '_'
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(mon_icone)"""
-SCREEN = pygame.display.set_mode((1280, 720))
+WIDTH, HEIGHT = 1280, 720
+SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 icone = pygame.image.load("assets/icone.png")
 pygame.display.set_caption("Ultimate Archer")
 pygame.display.set_icon(icone)

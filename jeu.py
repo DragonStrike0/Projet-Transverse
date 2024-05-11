@@ -4,13 +4,24 @@ import math
 import pygame
 from os import listdir
 from os.path import isfile, join
+
+import Menus
 from Boutons import Button
 from Menus import *
 
 pygame.display.set_caption("Ultimate Archer")
+pygame.font.init()
+pygame.mixer.init()
 
 WIDTH, HEIGHT = 1280, 720
+SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 FPS = 60
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+YELLOW = (255, 255, 0)
+
 PLAYER_VEL = 5
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -215,17 +226,60 @@ def get_background(name):
 
     return tiles, image
 
-
-def draw(window, background, bg_image, player, objects, offset_x):
+def draw(window, background, bg_image, player1, player2, objects, offset_x):
     for tile in background:
         window.blit(bg_image, tile)
 
     for obj in objects:
         obj.draw(window, offset_x)
 
-    player.draw(window, offset_x)
+    player1.draw(window, offset_x)
+    player2.draw(window, offset_x)
 
     pygame.display.update()
+
+'''def draw(window, background, bg_image, player1, player2, objects, offset_x, p2_arrows, p1_arrows, p2_health, p1_health):
+    for tile in background:
+        window.blit(bg_image, tile)
+
+    for obj in objects:
+        obj.draw(window, offset_x)
+
+    player1.draw(window, offset_x)
+    player2.draw(window, offset_x)
+
+    red_health_text = HEALTH_FONT.render(
+        "Health: " + str(p2_health), 1, WHITE)
+    yellow_health_text = HEALTH_FONT.render(
+        "Health: " + str(p1_health), 1, WHITE)
+    window.blit(red_health_text, (WIDTH - red_health_text.get_width() - 10, 10))
+    window.blit(yellow_health_text, (10, 10))
+
+    for arrow in p2_arrows:
+        pygame.draw.rect(window, RED, arrow)
+
+    for arrow in p1_arrows:
+        pygame.draw.rect(window, YELLOW, arrow)
+
+    pygame.display.update()'''
+
+'''def draw_window(p2_arrows, p1_arrows, p2_health, p1_health):
+    # window.blit(SPACE, (0, 0))
+    # pygame.draw.rect(window, BLACK, BORDER)
+
+    red_health_text = HEALTH_FONT.render(
+        "Health: " + str(p2_health), 1, WHITE)
+    yellow_health_text = HEALTH_FONT.render(
+        "Health: " + str(p1_health), 1, WHITE)
+    window.blit(red_health_text, (WIDTH - red_health_text.get_width() - 10, 10))
+    window.blit(yellow_health_text, (10, 10))
+
+    for arrow in p2_arrows:
+        pygame.draw.rect(window, RED, arrow)
+
+    for arrow in p1_arrows:
+        pygame.draw.rect(window, YELLOW, arrow)'''
+
 
 
 def handle_vertical_collision(player, objects, dy):
@@ -278,13 +332,201 @@ def handle_move(player, objects):
             player.make_hit()
 
 
+
+
+
+
+
+
+BORDER = pygame.Rect(WIDTH//2 - 5, 0, 10, HEIGHT)
+
+#BULLET_HIT_SOUND = pygame.mixer.Sound('Assets/Grenade+1.mp3')
+#BULLET_FIRE_SOUND = pygame.mixer.Sound('Assets/Gun+Silencer.mp3')
+
+HEALTH_FONT = pygame.font.SysFont('comicsans', 40)
+WINNER_FONT = pygame.font.SysFont('comicsans', 100)
+
+ARROW_VEL = 7
+MAX_ARROWS = 3
+SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 55, 40
+
+PLAYER1 = pygame.USEREVENT + 1   # YELLOW
+PLAYER2 = pygame.USEREVENT + 2   # RED
+
+'''YELLOW_SPACESHIP_IMAGE = pygame.image.load(
+    os.path.join('Assets', 'spaceship_yellow.png'))
+YELLOW_SPACESHIP = pygame.transform.rotate(pygame.transform.scale(
+    YELLOW_SPACESHIP_IMAGE, (SPACESHIP_WIDTH, SPACESHIP_HEIGHT)), 90)
+
+RED_SPACESHIP_IMAGE = pygame.image.load(
+    os.path.join('Assets', 'spaceship_red.png'))
+RED_SPACESHIP = pygame.transform.rotate(pygame.transform.scale(
+    RED_SPACESHIP_IMAGE, (SPACESHIP_WIDTH, SPACESHIP_HEIGHT)), 270)
+
+SPACE = pygame.transform.scale(pygame.image.load(
+    os.path.join('Assets', 'space.png')), (WIDTH, HEIGHT))'''
+
+
+def draw_window(red, yellow, red_bullets, yellow_bullets, p2_health, p1_health):
+    # window.blit(SPACE, (0, 0))
+    pygame.draw.rect(window, BLACK, BORDER)
+
+    red_health_text = HEALTH_FONT.render(
+        "Health: " + str(p2_health), 1, WHITE)
+    yellow_health_text = HEALTH_FONT.render(
+        "Health: " + str(p1_health), 1, WHITE)
+    window.blit(red_health_text, (WIDTH - red_health_text.get_width() - 10, 10))
+    window.blit(yellow_health_text, (10, 10))
+
+    # window.blit(YELLOW_SPACESHIP, (yellow.x, yellow.y))
+    # window.blit(RED_SPACESHIP, (red.x, red.y))
+
+    for bullet in red_bullets:
+        pygame.draw.rect(window, RED, bullet)
+
+    for bullet in yellow_bullets:
+        pygame.draw.rect(window, YELLOW, bullet)
+
+    pygame.display.update()
+
+
+'''def yellow_handle_movement(keys_pressed, yellow):
+    if keys_pressed[pygame.K_a] and yellow.x - PLAYER_VEL > 0:  # LEFT
+        yellow.x -= PLAYER_VEL
+    if keys_pressed[pygame.K_d] and yellow.x + PLAYER_VEL + yellow.width < BORDER.x:  # RIGHT
+        yellow.x += PLAYER_VEL
+    if keys_pressed[pygame.K_w] and yellow.y - PLAYER_VEL > 0:  # UP
+        yellow.y -= PLAYER_VEL
+    if keys_pressed[pygame.K_s] and yellow.y + PLAYER_VEL + yellow.height < HEIGHT - 15:  # DOWN
+        yellow.y += PLAYER_VEL'''
+
+
+'''def red_handle_movement(keys_pressed, red):
+    if keys_pressed[pygame.K_LEFT] and red.x - PLAYER_VEL > BORDER.x + BORDER.width:  # LEFT
+        red.x -= PLAYER_VEL
+    if keys_pressed[pygame.K_RIGHT] and red.x + PLAYER_VEL + red.width < WIDTH:  # RIGHT
+        red.x += PLAYER_VEL
+    if keys_pressed[pygame.K_UP] and red.y - PLAYER_VEL > 0:  # UP
+        red.y -= PLAYER_VEL
+    if keys_pressed[pygame.K_DOWN] and red.y + PLAYER_VEL + red.height < HEIGHT - 15:  # DOWN
+        red.y += PLAYER_VEL'''
+
+
+def handle_bullets(yellow_bullets, red_bullets, yellow, red):
+    for bullet in yellow_bullets:
+        bullet.x += ARROW_VEL
+        if red.colliderect(bullet):
+            pygame.event.post(pygame.event.Event(PLAYER2))
+            yellow_bullets.remove(bullet)
+        elif bullet.x > WIDTH:
+            yellow_bullets.remove(bullet)
+
+    for bullet in red_bullets:
+        bullet.x -= ARROW_VEL
+        if yellow.colliderect(bullet):
+            pygame.event.post(pygame.event.Event(PLAYER1))
+            red_bullets.remove(bullet)
+        elif bullet.x < 0:
+            red_bullets.remove(bullet)
+
+
+def draw_winner(text):
+    draw_text = WINNER_FONT.render(text, 1, WHITE)
+    window.blit(draw_text, (WIDTH / 2 - draw_text.get_width() /
+                            2, HEIGHT / 2 - draw_text.get_height() / 2))
+    pygame.display.update()
+    pygame.time.delay(5000)
+    Menus.main_menu(SCREEN)
+
+
+def main():
+    red = pygame.Rect(700, 300, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
+    yellow = pygame.Rect(100, 300, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
+
+    p2_arrows = []   # ok
+    p1_arrows = []   # ok
+
+    p2_health = 10   # ok
+    p1_health = 10   # ok
+
+    clock = pygame.time.Clock()   # ok
+    run = True   # ok
+    while run:   # ok
+        clock.tick(FPS)   # ok
+        for event in pygame.event.get():   # ok
+            if event.type == pygame.QUIT:   # ok
+                run = False   # ok
+                pygame.quit()   # ok
+
+            if event.type == pygame.KEYDOWN:   # ok
+                if event.key == pygame.K_LCTRL and len(p1_arrows) < MAX_ARROWS:   # ok
+                    bullet = pygame.Rect(   # ok
+                        yellow.x + yellow.width, yellow.y + yellow.height//2 - 2, 10, 5)   # ok
+                    p1_arrows.append(bullet)   # ok
+                    #BULLET_FIRE_SOUND.play()
+
+                if event.key == pygame.K_RCTRL and len(p2_arrows) < MAX_ARROWS:   # ok
+                    bullet = pygame.Rect(   # ok
+                        red.x, red.y + red.height//2 - 2, 10, 5)   # ok
+                    p2_arrows.append(bullet)   # ok
+                    #BULLET_FIRE_SOUND.play()
+
+            if event.type == PLAYER2:   # ok
+                p2_health -= 1   # ok
+                #BULLET_HIT_SOUND.play()
+
+            if event.type == PLAYER1:   # ok
+                p1_health -= 1   # ok
+                #BULLET_HIT_SOUND.play()
+
+        winner_text = ""   # ok
+        if p2_health <= 0:   # ok
+            winner_text = "Yellow Wins!"   # ok
+
+        if p1_health <= 0:   # ok
+            winner_text = "Red Wins!"   # ok
+
+        if winner_text != "":   # ok
+            draw_winner(winner_text)   # ok
+            break   # ok
+
+        '''keys_pressed = pygame.key.get_pressed()
+        yellow_handle_movement(keys_pressed, yellow)
+        red_handle_movement(keys_pressed, red)'''
+
+        handle_bullets(p1_arrows, p2_arrows, yellow, red)   # ok
+
+        draw_window(red, yellow, p2_arrows, p1_arrows,
+                    p2_health, p1_health)
+
+    main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def game(window):
     clock = pygame.time.Clock()
     background, bg_image = get_background("earth.png")
 
     block_size = 96
 
-    player = Player(100, 100, 50, 50)
+    player1 = Player(100, 100, 50, 50)
+    player2 = Player(WIDTH-100, 100, 50, 50)
     fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
     fire.on()
     floor = [Block(i * block_size, HEIGHT - block_size, block_size)
@@ -295,6 +537,12 @@ def game(window):
     offset_x = 0
     scroll_area_width = 200
 
+    p2_arrows = []
+    p1_arrows = []
+
+    p2_health = 10
+    p1_health = 10
+
     run = True
     while run:
         clock.tick(FPS)
@@ -302,20 +550,70 @@ def game(window):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                pygame.quit()
                 break
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and player.jump_count < 2:
-                    player.jump()
+                if event.key == pygame.K_SPACE and player1.jump_count < 2:
+                    player1.jump()
 
-        player.loop(FPS)
+                if event.key == pygame.K_RCTRL and len(p2_arrows) < MAX_ARROWS:
+                    arrow = pygame.Rect(
+                        player1.rect.x, player1.rect.y + player1.rect.height//2 - 2, 10, 5)
+                    p2_arrows.append(arrow)
+                    #BULLET_FIRE_SOUND.play()
+
+                '''if event.key == pygame.K_LCTRL and len(p1_arrows) < MAX_ARROWS:
+                    arrow = pygame.Rect(
+                        yellow.x + yellow.width, yellow.y + yellow.height//2 - 2, 10, 5)
+                    p1_arrows.append(arrow)
+                    #BULLET_FIRE_SOUND.play()'''
+
+            if event.type == PLAYER2:
+                p2_health -= 1
+                #BULLET_HIT_SOUND.play()
+
+            if event.type == PLAYER1:
+                p1_health -= 1
+                #BULLET_HIT_SOUND.play()
+
+        winner_text = ""
+        if p2_health <= 0:
+            winner_text = "P2 Wins!"
+
+        if p1_health <= 0:
+            winner_text = "P1 Wins!"
+
+        if winner_text != "":
+            draw_winner(winner_text)
+            break
+
+        handle_bullets(p2_arrows, p1_arrows, player2.rect, player1.rect)   # le 2eme player1.rect doit être modifié
+
+
+
+
+
+
+
+        player1.loop(FPS)
+        player2.loop(FPS)
         fire.loop()
-        handle_move(player, objects)
-        draw(window, background, bg_image, player, objects, offset_x)
+        handle_move(player1, objects)
+        handle_move(player2, objects)
+        draw(window, background, bg_image, player1, player2, objects, offset_x)#, p2_arrows, p1_arrows,p2_health, p1_health)
 
-        if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
-                (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
-            offset_x += player.x_vel
+
+        # draw_window(PLAYER2, PLAYER1, p2_arrows, p1_arrows,
+        #             p2_health, p1_health)
+
+        if ((player1.rect.right - offset_x >= WIDTH - scroll_area_width) and player1.x_vel > 0) or (
+                (player1.rect.left - offset_x <= scroll_area_width) and player1.x_vel < 0):
+            offset_x += player1.x_vel
+
+        if ((player2.rect.right - offset_x >= WIDTH - scroll_area_width) and player2.x_vel > 0) or (
+                (player2.rect.left - offset_x <= scroll_area_width) and player2.x_vel < 0):
+            offset_x += player2.x_vel
 
     pygame.quit()
     quit()
