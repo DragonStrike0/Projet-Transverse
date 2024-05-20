@@ -2,6 +2,7 @@ import pygame
 import sys
 import ctypes
 import math
+
 from Boutons import Button
 from jeu import game, window
 import Settings
@@ -10,6 +11,7 @@ import Settings
 BG = pygame.image.load("assets/Background.png")
 Gravity = None
 Velocity = None
+MAP = 'TERRE'
 
 def get_font(typo, size):
     if typo == 'font':
@@ -23,7 +25,7 @@ def get_font(typo, size):
 
 
 # boucle active dans le menu après avoir cliqué sur "play"
-def play(SCREEN):
+def play(SCREEN, MAP):
     SCREEN.fill("black") #hors de la boucle pour éviter un bug graphique, remettre dans la boucle si nécessaire
     while True:
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
@@ -53,7 +55,7 @@ def play(SCREEN):
                     main_menu(SCREEN)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_START.checkForInput(PLAY_MOUSE_POS):
-                    game(window)
+                    game(window, MAP)
 
         pygame.display.update()
 
@@ -79,6 +81,7 @@ def options(SCREEN):
         GRAVITY_LUNE = Button(image=None, pos=(320, 360), text_input="LUNE",
                               font=get_font('Text', 75),base_color="Blue", hovering_color="Grey")
 
+
         GRAVITY_TERRE = Button(image=None, pos=(640, 360), text_input="TERRE",
                                font=get_font('Text', 75),base_color="Green", hovering_color="Blue")
 
@@ -96,22 +99,25 @@ def options(SCREEN):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
-                    main_menu(SCREEN)
+                    main_menu(SCREEN, MAP)
                 # Check for gravity button clicks
                 if GRAVITY_LUNE.checkForInput(OPTIONS_MOUSE_POS):
+                    MAP = 'LUNE'
                     Settings.update_settings(0.24, 55)
                     print("Gravity set to LUNE")  # replace with actual code to set gravity
                 if GRAVITY_TERRE.checkForInput(OPTIONS_MOUSE_POS):
+                    MAP = 'TERRE'
                     Settings.update_settings(1, 50)
                     print("Gravity set to TERRE")  # replace with actual code to set gravity
                 if GRAVITY_MARS.checkForInput(OPTIONS_MOUSE_POS):
+                    MAP ='MARS'
                     Settings.update_settings(1.6, 45)
                     print("Gravity set to MARS")  # replace with actual code to set gravity
 
         pygame.display.update()
 
 # boucle principale du menu
-def main_menu(SCREEN):
+def main_menu(SCREEN, MAP):
     while True:
         SCREEN.blit(BG, (0, 0))
 
@@ -142,7 +148,7 @@ def main_menu(SCREEN):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    play(SCREEN)
+                    play(SCREEN, MAP)
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options(SCREEN)
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):

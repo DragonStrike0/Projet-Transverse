@@ -21,8 +21,8 @@ pygame.display.set_icon(icone)
 
 
 BG = pygame.image.load("assets/Background.png")
+MAP = 'TERRE'
 
 
 
-
-main_menu(SCREEN)
+main_menu(SCREEN, MAP)

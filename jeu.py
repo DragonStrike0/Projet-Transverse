@@ -66,6 +66,24 @@ def get_block(size):
     return pygame.transform.scale2x(surface)
 
 
+def get_moon_block(size):
+    path = join("assets2", "Terrain", "Terrain.png")
+    image = pygame.image.load(path).convert_alpha()
+    surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)
+    rect = pygame.Rect(96, 128, size, size)
+    surface.blit(image, (0, 0), rect)
+    return pygame.transform.scale2x(surface)
+
+
+def get_mars_block(size):
+    path = join("assets2", "Terrain", "Terrain.png")
+    image = pygame.image.load(path).convert_alpha()
+    surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)
+    rect = pygame.Rect(96, 64, size, size)
+    surface.blit(image, (0, 0), rect)
+    return pygame.transform.scale2x(surface)
+
+
 class Player1(pygame.sprite.Sprite):
     COLOR = (255, 0, 0)
     GRAVITY = 1
@@ -274,9 +292,14 @@ class Object(pygame.sprite.Sprite):
 
 
 class Block(Object):
-    def __init__(self, x, y, size):
+    def __init__(self, x, y, size, MAP):
         super().__init__(x, y, size, size)
-        block = get_block(size)
+        if MAP == 'MARS':
+            block = get_mars_block(size)
+        elif MAP == 'LUNE':
+            block = get_moon_block(size)
+        else:
+            block = get_block(size)
         self.image.blit(block, (0, 0))
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -328,8 +351,12 @@ class Arrow(pygame.sprite.Sprite):
         self.rect = self.image_scaled.get_rect(center=(self.x, self.y))
         self.mask = pygame.mask.from_surface(self.image)
 
+    def rotate_arrow(self):
+        return pygame.transform.rotate(self.image_scaled, self.angle)
+
     def update(self):
         self.temps += 0.1
+        self.rotate_arrow() #marshpa
         self.x = self.depart_x + self.speed * self.temps * math.cos(math.radians(self.angle))
         self.y = self.depart_y - self.speed * self.temps + (1/2)*self.g * self.temps * self.temps
         self.rect.center = (self.x, self.y)
@@ -507,10 +534,10 @@ def draw_winner(text):
                             2, HEIGHT / 2 - draw_text.get_height() / 2))
     pygame.display.update()
     pygame.time.delay(5000)
-    Menus.main_menu(SCREEN)
+    Menus.main_menu(SCREEN, 'TERRE')
 
 
-def game(window):
+def game(window,MAP = 'TERRE'):
     clock = pygame.time.Clock()
     background, bg_image = get_background("earth.png")
 
@@ -523,10 +550,53 @@ def game(window):
     player2 = Player2(WIDTH - 100, 100, 50, 50)
     fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
     fire.on()
-    floor = [Block(i * block_size, HEIGHT - block_size, block_size)
-             for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
-    objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),
-               Block(block_size * 3, HEIGHT - block_size * 4, block_size), fire]
+    if MAP == 'TERRE':
+        floor = [Block(i * block_size, HEIGHT - block_size, block_size, MAP)
+                 for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
+        wall1 = [Block(-1 * block_size, i * block_size, block_size, MAP)
+                 for i in range(-HEIGHT // block_size, (HEIGHT * 2) // block_size)]
+        wall2 = [Block(WIDTH- 0 * block_size, i * block_size, block_size, MAP)
+                 for i in range(-HEIGHT // block_size, (HEIGHT * 2) // block_size)]
+
+        objects = [*floor, *wall1, *wall2, Block(block_size * 6, HEIGHT - block_size * 2, block_size, MAP),
+                   Block(block_size * 2, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 3, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 4, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 8, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 9, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 10, HEIGHT - block_size * 4, block_size, MAP), fire]
+
+    if MAP == 'LUNE':
+        floor = [Block(i * block_size, HEIGHT - block_size, block_size, MAP)
+                 for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
+        wall1 = [Block(-1 * block_size, i * block_size, block_size, MAP)
+                 for i in range(-HEIGHT // block_size, (HEIGHT * 2) // block_size)]
+        wall2 = [Block(WIDTH- 0 * block_size, i * block_size, block_size, MAP)
+                 for i in range(-HEIGHT // block_size, (HEIGHT * 2) // block_size)]
+
+        objects = [*floor, *wall1, *wall2, Block(block_size * 6, HEIGHT - block_size * 2, block_size, MAP),
+                   Block(block_size * 2, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 3, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 4, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 8, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 9, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 10, HEIGHT - block_size * 4, block_size, MAP)]
+
+    if MAP == 'MARS':
+        floor = [Block(i * block_size, HEIGHT - block_size, block_size, MAP)
+                 for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
+        wall1 = [Block(-1 * block_size, i * block_size, block_size, MAP)
+                 for i in range(-HEIGHT // block_size, (HEIGHT * 2) // block_size)]
+        wall2 = [Block(WIDTH- 0 * block_size, i * block_size, block_size, MAP)
+                 for i in range(-HEIGHT // block_size, (HEIGHT * 2) // block_size)]
+
+        objects = [*floor, *wall1, *wall2, Block(block_size * 6, HEIGHT - block_size * 2, block_size, MAP),
+                   Block(block_size * 2, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 3, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 4, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 8, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 9, HEIGHT - block_size * 4, block_size, MAP),
+                   Block(block_size * 10, HEIGHT - block_size * 4, block_size, MAP)]
 
     offset_x = 0
     scroll_area_width = 200
@@ -621,13 +691,13 @@ def game(window):
             if arrow.x < 0:
                 p2_arrows.remove(arrow)
 
-        if ((player1.rect.right - offset_x >= WIDTH - scroll_area_width) and player1.x_vel > 0) or (
+        '''if ((player1.rect.right - offset_x >= WIDTH - scroll_area_width) and player1.x_vel > 0) or (
                 (player1.rect.left - offset_x <= scroll_area_width) and player1.x_vel < 0):
             offset_x += player1.x_vel
 
         if ((player2.rect.right - offset_x >= WIDTH - scroll_area_width) and player2.x_vel > 0) or (
                 (player2.rect.left - offset_x <= scroll_area_width) and player2.x_vel < 0):
-            offset_x += player2.x_vel
+            offset_x += player2.x_vel'''
 
 
     pygame.quit()
