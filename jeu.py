@@ -488,7 +488,7 @@ def handle_bullets(p1_arrows, p2_arrows, player1, player2, offset):
         player1.rect.x += offset
 
 
-def handle_arrows(player, p_arrows, offset_x, joysticks):
+def handle_arrows(player, p_arrows, offset_x, joysticks, cooldomw):
     for arrow in range(len(p_arrows)):
         p_arrows[arrow].update()
     if joysticks:
@@ -497,8 +497,12 @@ def handle_arrows(player, p_arrows, offset_x, joysticks):
         axis_y = joysticks.get_axis(3)
         angle = math.atan2(axis_y, axis_x) * (180 / math.pi)
         if joysticks.get_button(10):
-            arrow = Arrow(player.rect.centerx - offset_x, player.rect.centery, angle, ARROW_VEL)
-            p_arrows.append(arrow)
+            if cooldomw <= 0:
+                cooldomw = 100000000
+                arrow = Arrow(player.rect.centerx - offset_x, player.rect.centery, angle, ARROW_VEL)
+                p_arrows.append(arrow)
+            else:
+                cooldomw - 1
 
 
 def draw_winner(text):
@@ -533,7 +537,8 @@ def game(window):
 
     motion1 = [0, 0]
     motion2 = [0, 0]
-
+    cooldomw1 = 0
+    cooldomw2 = 0
     p2_arrows = []
     p1_arrows = []
 
@@ -596,8 +601,8 @@ def game(window):
         fire.loop()
         handle_move1(player1, objects, joysticks[0])
         handle_move2(player2, objects, joysticks[1])
-        handle_arrows(player1, p1_arrows, offset_x, joysticks[0])
-        handle_arrows(player2, p2_arrows, offset_x, joysticks[1])
+        cooldomw1 = handle_arrows(player1, p1_arrows, offset_x, joysticks[0], cooldomw1)
+        cooldomw2 = handle_arrows(player2, p2_arrows, offset_x, joysticks[1], cooldomw2)
         draw(window, background, bg_image, player1, player2, objects, offset_x, p2_arrows, p1_arrows,
              p2_health, p1_health)
 
