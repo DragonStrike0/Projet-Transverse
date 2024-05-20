@@ -329,7 +329,7 @@ class Arrow(pygame.sprite.Sprite):
 
     def update(self):
         self.temps += 0.1
-        self.x = self.depart_x + self.speed * self.temps
+        self.x = self.depart_x + self.speed * self.temps * math.cos(math.radians(self.angle))
         self.y = self.depart_y - self.speed * self.temps + (1/2)*self.g * self.temps * self.temps
         self.rect.center = (self.x, self.y)
 
@@ -491,7 +491,10 @@ def handle_arrows(player, p_arrows, offset_x, joysticks):
     for arrow in range(len(p_arrows)):
         p_arrows[arrow].update()
     if joysticks:
-        angle = math.degrees(math.atan2(joysticks.get_axis(4), joysticks.get_axis(3)))
+        # Récupérer les valeurs normalisées des axes
+        axis_x = joysticks.get_axis(3)
+        axis_y = joysticks.get_axis(4)
+        angle = math.atan2(axis_y, axis_x) * (180 / math.pi)
         if joysticks.get_button(10):
             arrow = Arrow(player.rect.centerx - offset_x, player.rect.centery, angle, ARROW_VEL)
             p_arrows.append(arrow)
