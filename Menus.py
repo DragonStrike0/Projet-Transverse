@@ -110,7 +110,6 @@ def options(SCREEN):
 
         pygame.display.update()
 
-
 # boucle principale du menu
 def main_menu(SCREEN):
     while True:
