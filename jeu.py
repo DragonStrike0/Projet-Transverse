@@ -4,10 +4,11 @@ import math
 import pygame
 from os import listdir
 from os.path import isfile, join
-
 import Menus
+import Settings
 from Boutons import Button
 from Menus import *
+
 
 pygame.display.set_caption("Ultimate Archer")
 pygame.font.init()
@@ -67,7 +68,6 @@ def get_block(size):
 
 class Player1(pygame.sprite.Sprite):
     COLOR = (255, 0, 0)
-    GRAVITY = 1
     SPRITES = load_sprite_sheets("MainCharacters", "Human", 32, 32, True)
     ANIMATION_DELAY = 3
 
@@ -85,7 +85,12 @@ class Player1(pygame.sprite.Sprite):
         self.hit_count = 0
 
     def jump(self):
-        self.y_vel = -self.GRAVITY * 8
+        if Settings.GRAVITY == 1:
+            self.y_vel = -Settings.GRAVITY * 8
+        elif Settings.GRAVITY == 0.24:
+            self.y_vel = -Settings.GRAVITY * 40
+        elif Settings.GRAVITY == 1.6:
+            self.y_vel = -Settings.GRAVITY * 5
         self.animation_count = 0
         self.jump_count += 1
         if self.jump_count == 1:
@@ -111,7 +116,7 @@ class Player1(pygame.sprite.Sprite):
             self.animation_count = 0
 
     def loop(self, fps):
-        self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)
+        self.y_vel += min(1, (self.fall_count / fps) * Settings.GRAVITY)
         self.move(self.x_vel, self.y_vel)
 
         if self.hit:
@@ -141,10 +146,11 @@ class Player1(pygame.sprite.Sprite):
                 sprite_sheet = "jump"
             elif self.jump_count == 2:
                 sprite_sheet = "double_jump"
-        elif self.y_vel > self.GRAVITY * 2:
+        elif self.y_vel > Settings.GRAVITY * 2:
             sprite_sheet = "fall"
         elif self.x_vel != 0:
             sprite_sheet = "run"
+
 
         sprite_sheet_name = sprite_sheet + "_" + self.direction
         sprites = self.SPRITES[sprite_sheet_name]
@@ -164,7 +170,6 @@ class Player1(pygame.sprite.Sprite):
 
 class Player2(pygame.sprite.Sprite):
     COLOR = (255, 0, 0)
-    GRAVITY = 1
     SPRITES = load_sprite_sheets("MainCharacters", "Human", 32, 32, True)
     ANIMATION_DELAY = 3
 
@@ -182,7 +187,12 @@ class Player2(pygame.sprite.Sprite):
         self.hit_count = 0
 
     def jump(self):
-        self.y_vel = -self.GRAVITY * 8
+        if Settings.GRAVITY == 1:
+            self.y_vel = -Settings.GRAVITY * 8
+        elif Settings.GRAVITY == 0.24:
+            self.y_vel = -Settings.GRAVITY * 40
+        elif Settings.GRAVITY == 1.6:
+            self.y_vel = -Settings.GRAVITY * 5
         self.animation_count = 0
         self.jump_count += 1
         if self.jump_count == 1:
@@ -208,7 +218,7 @@ class Player2(pygame.sprite.Sprite):
             self.animation_count = 0
 
     def loop(self, fps):
-        self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)
+        self.y_vel += min(1, (self.fall_count / fps) * Settings.GRAVITY)
         self.move(self.x_vel, self.y_vel)
 
         if self.hit:
@@ -238,7 +248,7 @@ class Player2(pygame.sprite.Sprite):
                 sprite_sheet = "jump"
             elif self.jump_count == 2:
                 sprite_sheet = "double_jump"
-        elif self.y_vel > self.GRAVITY * 2:
+        elif self.y_vel > Settings.GRAVITY * 2:
             sprite_sheet = "fall"
         elif self.x_vel != 0:
             sprite_sheet = "run"
@@ -329,7 +339,6 @@ class Arrow(pygame.sprite.Sprite):
 
     def update(self):
         self.temps += 0.1
-        #self.image_scaled = pygame.transform.rotate(self.rect, self.angle)
         self.x = self.depart_x + self.speed * self.temps * math.cos(math.radians(self.angle))
         self.y = self.depart_y - self.speed * self.temps + (1/2)*self.g * self.temps * self.temps
         self.rect.center = (self.x, self.y)
@@ -456,7 +465,7 @@ BORDER = pygame.Rect(WIDTH // 2 - 5, 0, 10, HEIGHT)
 HEALTH_FONT = pygame.font.SysFont('comicsans', 40)
 WINNER_FONT = pygame.font.SysFont('comicsans', 100)
 
-ARROW_VEL = 50
+
 MAX_ARROWS = 3
 SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 55, 40
 
@@ -487,8 +496,7 @@ def handle_bullets(p1_arrows, p2_arrows, player1, player2, offset):
             p2_arrows.remove(arrow)
         player1.rect.x += offset
 
-
-def handle_arrows(player, p_arrows, offset_x, joysticks, cooldomw):
+def handle_arrows(player, p_arrows, offset_x, joysticks):
     for arrow in range(len(p_arrows)):
         p_arrows[arrow].update()
     if joysticks:
@@ -497,20 +505,15 @@ def handle_arrows(player, p_arrows, offset_x, joysticks, cooldomw):
         axis_y = joysticks.get_axis(3)
         angle = math.atan2(axis_y, axis_x) * (180 / math.pi)
         if joysticks.get_button(10):
-            if cooldomw <= 0:
-                cooldomw = 100000000
-                arrow = Arrow(player.rect.centerx - offset_x, player.rect.centery, angle, ARROW_VEL)
-                p_arrows.append(arrow)
-            else:
-                cooldomw - 1
-
+            arrow = Arrow(player.rect.centerx - offset_x, player.rect.centery, angle, Settings.VELOCITY)
+            p_arrows.append(arrow)
 
 def draw_winner(text):
     draw_text = WINNER_FONT.render(text, True, WHITE)
     window.blit(draw_text, (WIDTH / 2 - draw_text.get_width() /
                             2, HEIGHT / 2 - draw_text.get_height() / 2))
     pygame.display.update()
-    pygame.time.delay(5000)
+    pygame.time.delay(2000)
     Menus.main_menu(SCREEN)
 
 
@@ -537,13 +540,12 @@ def game(window):
 
     motion1 = [0, 0]
     motion2 = [0, 0]
-    cooldomw1 = 0
-    cooldomw2 = 0
     p2_arrows = []
     p1_arrows = []
 
     p2_health = 10
     p1_health = 10
+
 
     run = True
     while run:
@@ -601,8 +603,8 @@ def game(window):
         fire.loop()
         handle_move1(player1, objects, joysticks[0])
         handle_move2(player2, objects, joysticks[1])
-        cooldomw1 = handle_arrows(player1, p1_arrows, offset_x, joysticks[0], cooldomw1)
-        cooldomw2 = handle_arrows(player2, p2_arrows, offset_x, joysticks[1], cooldomw2)
+        handle_arrows(player1, p1_arrows, offset_x, joysticks[0])
+        handle_arrows(player2, p2_arrows, offset_x, joysticks[1])
         draw(window, background, bg_image, player1, player2, objects, offset_x, p2_arrows, p1_arrows,
              p2_health, p1_health)
 
