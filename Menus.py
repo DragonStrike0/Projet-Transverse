@@ -4,10 +4,12 @@ import ctypes
 import math
 from Boutons import Button
 from jeu import game, window
+import Settings
 
 
 BG = pygame.image.load("assets/Background.png")
-
+Gravity = None
+Velocity = None
 
 def get_font(typo, size):
     if typo == 'font':
@@ -31,13 +33,13 @@ def play(SCREEN):
         SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
         PLAY_BACK = Button(image=None, pos=(640, 400), text_input="BACK", font=get_font('Text', 75),
-                           base_color="White", hovering_color="Green")
+                           base_color="White", hovering_color="Yellow")
 
         PLAY_BACK.changeColor(PLAY_MOUSE_POS)
         PLAY_BACK.update(SCREEN)
 
         PLAY_START = Button(image=None, pos=(640, 500), text_input="START", font=get_font('Text', 75),
-                            base_color="White", hovering_color="Green")
+                            base_color="White", hovering_color="Yellow")
 
         PLAY_START.changeColor(PLAY_MOUSE_POS)
         PLAY_START.update(SCREEN)
@@ -68,10 +70,25 @@ def options(SCREEN):
         SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
 
         OPTIONS_BACK = Button(image=None, pos=(640, 460), text_input="BACK", font=get_font('Text', 75),
-                              base_color="Black", hovering_color="Green")
+                              base_color="Black", hovering_color="Yellow")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.update(SCREEN)
+
+        # Create gravity buttons
+        GRAVITY_LUNE = Button(image=None, pos=(320, 360), text_input="LUNE",
+                              font=get_font('Text', 75),base_color="Blue", hovering_color="Grey")
+
+        GRAVITY_TERRE = Button(image=None, pos=(640, 360), text_input="TERRE",
+                               font=get_font('Text', 75),base_color="Green", hovering_color="Blue")
+
+        GRAVITY_MARS = Button(image=None, pos=(960, 360), text_input="MARS",
+                                font=get_font('Text', 75),base_color="Red", hovering_color="Orange")
+
+        # Update and draw buttons
+        for button in [GRAVITY_LUNE, GRAVITY_TERRE, GRAVITY_MARS]:
+            button.changeColor(OPTIONS_MOUSE_POS)
+            button.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -80,6 +97,16 @@ def options(SCREEN):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     main_menu(SCREEN)
+                # Check for gravity button clicks
+                if GRAVITY_LUNE.checkForInput(OPTIONS_MOUSE_POS):
+                    Settings.update_settings(0.24, 55)
+                    print("Gravity set to LUNE")  # replace with actual code to set gravity
+                if GRAVITY_TERRE.checkForInput(OPTIONS_MOUSE_POS):
+                    Settings.update_settings(1, 50)
+                    print("Gravity set to TERRE")  # replace with actual code to set gravity
+                if GRAVITY_MARS.checkForInput(OPTIONS_MOUSE_POS):
+                    Settings.update_settings(1.6, 45)
+                    print("Gravity set to MARS")  # replace with actual code to set gravity
 
         pygame.display.update()
 

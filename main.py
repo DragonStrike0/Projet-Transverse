@@ -20,7 +20,6 @@ pygame.display.set_caption("Ultimate Archer")
 pygame.display.set_icon(icone)
 
 
-# charger l'arrière plan
 BG = pygame.image.load("assets/Background.png")
 
 
