@@ -324,13 +324,13 @@ class Arrow(pygame.sprite.Sprite):
         self.speed = speed
         self.image = pygame.image.load("assets/opponent/fleche.png")
         self.image_scaled = pygame.transform.scale(self.image, (35, 35))
-        self.rect = self.image.get_rect(center=(self.x, self.y))
+        self.rect = self.image_scaled.get_rect(center=(self.x, self.y))
         self.mask = pygame.mask.from_surface(self.image)
 
     def update(self):
         self.temps += 0.1
         self.x = self.depart_x + self.speed * self.temps
-        self.y = self.depart_y - self.speed * self.temps + (1/2)*self.g* self.temps * self.temps
+        self.y = self.depart_y - self.speed * self.temps + (1/2)*self.g * self.temps * self.temps
         self.rect.center = (self.x, self.y)
 
     def draw(self, win):
@@ -465,6 +465,7 @@ PLAYER2 = pygame.USEREVENT + 2  # RED
 
 def handle_bullets(p1_arrows, p2_arrows, player1, player2, offset):
     for arrow in p1_arrows:
+        arrow.update()
         player2.rect.x -= offset
         if player2.rect.colliderect(arrow.rect):
             pygame.event.post(pygame.event.Event(PLAYER2))
@@ -491,8 +492,6 @@ def handle_arrows(player, p_arrows, offset_x, joysticks):
         p_arrows[arrow].update()
     if joysticks:
         angle = math.degrees(math.atan2(joysticks.get_axis(4), joysticks.get_axis(3)))
-        if angle < 0:
-            angle += 360
         if joysticks.get_button(10):
             arrow = Arrow(player.rect.centerx - offset_x, player.rect.centery, angle, ARROW_VEL)
             p_arrows.append(arrow)
