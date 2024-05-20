@@ -319,22 +319,22 @@ class Arrow(pygame.sprite.Sprite):
         self.x = x
         self.y = y
         self.temps = 0
-        self.g = 2
+        self.g = 9
         self.angle = angle
         self.speed = speed
-        self.image = pygame.image.load("assets/opponent/fleche.png").convert()
-        self.image_scaled = pygame.transform.scale(self.image, (5, 5))
+        self.image = pygame.image.load("assets/opponent/fleche.png")
+        self.image_scaled = pygame.transform.scale(self.image, (35, 35))
         self.rect = self.image.get_rect(center=(self.x, self.y))
         self.mask = pygame.mask.from_surface(self.image)
 
     def update(self):
-        self.temps += 0.01
+        self.temps += 0.1
         self.x = self.depart_x + self.speed * self.temps
         self.y = self.depart_y - self.speed * self.temps + (1/2)*self.g* self.temps * self.temps
         self.rect.center = (self.x, self.y)
 
     def draw(self, win):
-        win.blit(self.image, self.rect)
+        win.blit(self.image_scaled, self.rect)
 
 
 def get_background(name):
@@ -455,7 +455,7 @@ BORDER = pygame.Rect(WIDTH // 2 - 5, 0, 10, HEIGHT)
 HEALTH_FONT = pygame.font.SysFont('comicsans', 40)
 WINNER_FONT = pygame.font.SysFont('comicsans', 100)
 
-ARROW_VEL = 20
+ARROW_VEL = 50
 MAX_ARROWS = 3
 SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 55, 40
 
