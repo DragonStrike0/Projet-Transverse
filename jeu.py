@@ -262,7 +262,7 @@ class Player2(pygame.sprite.Sprite):
 class Object(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, name=None):
         super().__init__()
-        self.rect = pygame.Rect(x, y, width, height)
+        self.rect =pygame.Rect(x, y, width, height)
         self.image = pygame.Surface((width, height), pygame.SRCALPHA)
         self.width = width
         self.height = height
@@ -310,24 +310,32 @@ class Fire(Object):
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
             self.animation_count = 0
 
+
 class Arrow(pygame.sprite.Sprite):
     def __init__(self, x, y, angle, speed):
         super().__init__()
+        self.depart_x = x
+        self.depart_y = y
         self.x = x
         self.y = y
+        self.temps = 0
+        self.g = 2
         self.angle = angle
         self.speed = speed
-        self.image = pygame.image.load("assets/opponent/fleche.png")
+        self.image = pygame.image.load("assets/opponent/fleche.png").convert()
+        self.image_scaled = pygame.transform.scale(self.image, (5, 5))
         self.rect = self.image.get_rect(center=(self.x, self.y))
         self.mask = pygame.mask.from_surface(self.image)
 
     def update(self):
-        self.x += self.speed * math.cos(math.radians(self.angle))
-        self.y -= self.speed * math.sin(math.radians(self.angle))
+        self.temps += 0.01
+        self.x = self.depart_x + self.speed * self.temps
+        self.y = self.depart_y - self.speed * self.temps + (1/2)*self.g* self.temps * self.temps
         self.rect.center = (self.x, self.y)
 
     def draw(self, win):
         win.blit(self.image, self.rect)
+
 
 def get_background(name):
     image = pygame.image.load(join("assets2", "Background", name))
@@ -342,8 +350,8 @@ def get_background(name):
     return tiles, image
 
 
-
-def draw(window, background, bg_image, player1, player2, objects, offset_x, p2_arrows, p1_arrows, p2_health, p1_health):
+def draw(window, background, bg_image, player1, player2, objects, offset_x, p2_arrows, p1_arrows, p2_health,
+         p1_health):
     for tile in background:
         window.blit(bg_image, tile)
 
@@ -367,9 +375,6 @@ def draw(window, background, bg_image, player1, player2, objects, offset_x, p2_a
         arrow.draw(window)
 
     pygame.display.update()
-
-
-
 
 
 def handle_vertical_collision(player, objects, dy):
@@ -442,8 +447,7 @@ def handle_move2(player, objects, joysticks):
             player.make_hit()
 
 
-
-BORDER = pygame.Rect(WIDTH//2 - 5, 0, 10, HEIGHT)
+BORDER = pygame.Rect(WIDTH // 2 - 5, 0, 10, HEIGHT)
 
 # BULLET_HIT_SOUND = pygame.mixer.Sound('Assets/Grenade+1.mp3')
 # BULLET_FIRE_SOUND = pygame.mixer.Sound('Assets/Gun+Silencer.mp3')
@@ -455,12 +459,12 @@ ARROW_VEL = 20
 MAX_ARROWS = 3
 SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 55, 40
 
-PLAYER1 = pygame.USEREVENT + 1   # YELLOW
-PLAYER2 = pygame.USEREVENT + 2   # RED
+PLAYER1 = pygame.USEREVENT + 1  # YELLOW
+PLAYER2 = pygame.USEREVENT + 2  # RED
+
 
 def handle_bullets(p1_arrows, p2_arrows, player1, player2, offset):
     for arrow in p1_arrows:
-        arrow.update()
         player2.rect.x -= offset
         if player2.rect.colliderect(arrow.rect):
             pygame.event.post(pygame.event.Event(PLAYER2))
@@ -483,6 +487,8 @@ def handle_bullets(p1_arrows, p2_arrows, player1, player2, offset):
 
 
 def handle_arrows(player, p_arrows, offset_x, joysticks):
+    for arrow in range(len(p_arrows)):
+        p_arrows[arrow].update()
     if joysticks:
         angle = math.degrees(math.atan2(joysticks.get_axis(4), joysticks.get_axis(3)))
         if angle < 0:
@@ -492,8 +498,6 @@ def handle_arrows(player, p_arrows, offset_x, joysticks):
             p_arrows.append(arrow)
 
 
-
-
 def draw_winner(text):
     draw_text = WINNER_FONT.render(text, True, WHITE)
     window.blit(draw_text, (WIDTH / 2 - draw_text.get_width() /
@@ -501,7 +505,6 @@ def draw_winner(text):
     pygame.display.update()
     pygame.time.delay(5000)
     Menus.main_menu(SCREEN)
-
 
 
 def game(window):
@@ -550,7 +553,7 @@ def game(window):
                 if (event.button == 0 and event.joy == 1) and player2.jump_count < 2:
                     player2.jump()
 
-            #les tirs et la trajectoire de merde j'y arrive pas encore
+            # les tirs et la trajectoire de merde j'y arrive pas encore
             if event.type == pygame.JOYAXISMOTION:
                 if (event.axis == 5 and event.joy == 0) and len(p1_arrows) < MAX_ARROWS:
                     mx, my = joysticks[0].get_axis(2), joysticks[0].get_axis(3)
@@ -572,7 +575,7 @@ def game(window):
                 p1_health -= 1
                 # BULLET_HIT_SOUND.play()
 
-        winner_text = ""
+        winner_text  = ""
         if p2_health <= 0:
             winner_text = "P2 Wins!"
 
