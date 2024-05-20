@@ -329,6 +329,7 @@ class Arrow(pygame.sprite.Sprite):
 
     def update(self):
         self.temps += 0.1
+        #self.image_scaled = pygame.transform.rotate(self.rect, self.angle)
         self.x = self.depart_x + self.speed * self.temps * math.cos(math.radians(self.angle))
         self.y = self.depart_y - self.speed * self.temps + (1/2)*self.g * self.temps * self.temps
         self.rect.center = (self.x, self.y)
@@ -492,8 +493,8 @@ def handle_arrows(player, p_arrows, offset_x, joysticks):
         p_arrows[arrow].update()
     if joysticks:
         # Récupérer les valeurs normalisées des axes
-        axis_x = joysticks.get_axis(3)
-        axis_y = joysticks.get_axis(4)
+        axis_x = joysticks.get_axis(2)
+        axis_y = joysticks.get_axis(3)
         angle = math.atan2(axis_y, axis_x) * (180 / math.pi)
         if joysticks.get_button(10):
             arrow = Arrow(player.rect.centerx - offset_x, player.rect.centery, angle, ARROW_VEL)
