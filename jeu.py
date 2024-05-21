@@ -351,7 +351,7 @@ class Arrow(pygame.sprite.Sprite):
         self.x = x
         self.y = y
         self.temps = 0
-        self.g = 9
+        self.g = 9,81
         self.angle = angle
         self.speed = speed
         self.image = pygame.image.load("assets/opponent/fleche.png")
